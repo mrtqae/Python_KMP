@@ -1,0 +1,75 @@
+def WyszukajWzorcaKMP(plik,*wzory):
+    
+    '''
+    Wczytanie z pliku tekstu, tworzenie tablicy LPS, wyszukanie wzorców w tekście za pomocą algorytmu KMP 
+    i zapisanie wyników do pliku "Wyniki.txt"
+    '''
+    
+    # Wczytanie z pliku
+    
+    plik = open(plik,encoding = 'UTF-8')
+    tekst=plik.read()
+    plik.close()
+    linie_tekstu=[]
+    
+    for wzor in wzory:
+        
+        # Tworzenie tablicy LPS
+        
+        wystapienia_wzoru=0
+        tab_indexy_wzorcow=[]
+            
+        dlugosc_wzoru = len(wzor)
+        dlugosc_tekstu = len(tekst)
+    
+        tablica_LPS = [0]*dlugosc_wzoru
+    
+        index_tab_wzor = 0
+        index_tab_tekst = 0
+        
+        dlugosc = 0
+    
+        tablica_LPS[0]
+        index=1
+    
+        while index < dlugosc_wzoru:
+        
+            if wzor[index]==wzor[dlugosc]:
+                dlugosc +=1
+                tablica_LPS[index] = dlugosc
+                index += 1
+            else:
+                if dlugosc != 0:
+                    dlugosc = tablica_LPS[dlugosc-1]
+                else:
+                    tablica_LPS[dlugosc]=0
+                    index += 1
+        
+        # Wyszukiwanie wzorców
+    
+        while index_tab_tekst < dlugosc_tekstu:
+            if wzor[index_tab_wzor]==tekst[index_tab_tekst]:
+                index_tab_tekst +=1
+                index_tab_wzor +=1
+            
+            if index_tab_wzor == dlugosc_wzoru:
+                tab_indexy_wzorcow.append(index_tab_tekst-index_tab_wzor)
+                wystapienia_wzoru+=1
+                index_tab_wzor = tablica_LPS[index_tab_wzor-1]
+            
+            elif index_tab_tekst < dlugosc_tekstu and wzor[index_tab_wzor] != tekst[index_tab_tekst]:
+                if index_tab_wzor != 0:
+                    index_tab_wzor = tablica_LPS[index_tab_wzor-1]
+                else:
+                    index_tab_tekst +=1
+        
+        linie_tekstu.append(f"Wzór: {wzor}, liczba wystąpnień: {wystapienia_wzoru}, indeksy początków wzorców w tekście: {tab_indexy_wzorcow}")
+        
+        
+    #zapisanie do pliku "Wyniki.txt"
+    
+    with open('Wyniki.txt','w',encoding = 'UTF-8') as wynik:
+        for linia in linie_tekstu:
+            wynik.write(linia+"\n")
+
+WyszukajWzorcaKMP('Tekst_wzor.txt','LA','OL','PUMA','ELKA')
